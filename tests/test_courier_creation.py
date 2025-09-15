@@ -25,7 +25,7 @@ class TestCourierCreation:
         assert response.json()['message'] == "Этот логин уже используется. Попробуйте другой."
 
     @allure.title("Тест создания курьера с пустым полем логина")
-    @pytest.mark.parametrize("missing_field", ["login", "password"])
+    @pytest.mark.parametrize("missing_field", ["login", "password", "firstName"])
     def test_create_courier_missing_field(self, create_login_password_firstname, missing_field):
         payload = create_login_password_firstname
         del payload[missing_field]
