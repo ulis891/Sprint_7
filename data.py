@@ -6,4 +6,11 @@ class Data:
 
     CREATE_COURIER_ENDPOINT = "/api/v1/courier"
 
+    ORDER_ENDPOINT = "/api/v1/orders"
 
+    COLOR_VARIANTS = [
+        ["BLACK"],
+        ["GREY"],
+        ["BLACK", "GREY"],
+        []
+    ]
