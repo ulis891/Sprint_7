@@ -21,7 +21,7 @@ class TestCourierCreation:
         assert response.status_code == 409, "Неверный код ответа"
         assert response.json()['message'] == "Этот логин уже используется. Попробуйте другой.", "Неверный ответ"
 
-    @allure.title("Тест создания курьера с пустым полем логина")
+    @allure.title("Тест создания курьера с пустым полем")
     @pytest.mark.parametrize("missing_field", ["login", "password", "firstName"])
     def test_create_courier_missing_field(self, samokat_api, create_login_password_firstname, missing_field):
         payload = create_login_password_firstname
