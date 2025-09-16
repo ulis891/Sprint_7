@@ -1,0 +1,48 @@
+import pytest
+import string
+import random
+from samokat_api import SamokatApi as API
+
+
+
+@pytest.fixture
+def samokat_api():
+    return API()
+
+@pytest.fixture
+def create_login_password_firstname():
+    def generate_random_string(length):
+        letters = string.ascii_lowercase
+        random_string = ''.join(random.choice(letters) for i in range(length))
+        return random_string
+
+    login = generate_random_string(10)
+    password = generate_random_string(10)
+    first_name = generate_random_string(10)
+
+    # собираем тело запроса
+    payload = {
+        "login": login,
+        "password": password,
+        "firstName": first_name
+    }
+    return payload
+
+
+@pytest.fixture
+def create_courier(samokat_api, create_login_password_firstname):
+    # response = requests.post(D.BASE_URL + D.CREATE_COURIER, data=create_login_password_firstname)
+    response = samokat_api.create_courier(data=create_login_password_firstname)
+    login_pass = []
+    if response.status_code == 201:
+        login_pass.append(create_login_password_firstname["login"])
+        login_pass.append(create_login_password_firstname["password"])
+        login_pass.append(create_login_password_firstname["firstName"])
+
+    yield login_pass
+    payload = {
+        "login": create_login_password_firstname["login"],
+        "password": create_login_password_firstname["password"]
+    }
+    API.delete_courier(samokat_api, data=payload)
+
