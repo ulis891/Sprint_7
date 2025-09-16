@@ -31,6 +31,3 @@ def get_order_payload(color=None):
         payload["color"] = color
 
     return payload
-
-
-
