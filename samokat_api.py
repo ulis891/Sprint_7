@@ -13,9 +13,10 @@ class SamokatApi:
                     courier_id = str(response_id.json()["id"])
                     response = requests.delete(D.BASE_URL + D.DELETE_COURIER + courier_id)
                     return response
-            courier_id = kwargs["id"]
-            response = requests.delete(D.BASE_URL + D.DELETE_COURIER + courier_id)
-            return response
+            else:
+                courier_id = kwargs["id"]
+                response = requests.delete(D.BASE_URL + D.DELETE_COURIER + courier_id)
+                return response
         response = requests.delete(D.BASE_URL + D.DELETE_COURIER)
         return response
 
