@@ -83,7 +83,3 @@ class TestCourierDelete:
         response = samokat_api.delete_courier(data=payload)
         assert response.status_code == 200, "Неверный код ответа"
         assert response.json() == {"ok": True}, "Неверный ответ"
-
-
-
-

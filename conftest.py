@@ -1,7 +1,6 @@
 import pytest
 import string
 import random
-import requests
 from samokat_api import SamokatApi as API
 
 
@@ -15,8 +14,8 @@ def delete_courier(samokat_api):
     def _delete_courier(data):
         response = samokat_api.delete_courier(data=data)
         return response
-    return _delete_courier
 
+    return _delete_courier
 
 
 @pytest.fixture
@@ -30,7 +29,6 @@ def create_login_password_firstname(delete_courier):
     password = generate_random_string(10)
     first_name = generate_random_string(10)
 
-    # собираем тело запроса
     payload = {
         "login": login,
         "password": password,
@@ -41,7 +39,6 @@ def create_login_password_firstname(delete_courier):
         del payload["firstName"]
     if "login" and "password" in payload:
         delete_courier(payload)
-
 
 
 @pytest.fixture
