@@ -9,7 +9,6 @@ from samokat_api import SamokatApi as API
 def samokat_api():
     return API()
 
-
 @pytest.fixture
 def create_login_password_firstname():
     def generate_random_string(length):
@@ -27,12 +26,12 @@ def create_login_password_firstname():
         "password": password,
         "firstName": first_name
     }
-    return payload
+    yield payload
+
 
 
 @pytest.fixture
 def create_courier(samokat_api, create_login_password_firstname):
-    # response = requests.post(D.BASE_URL + D.CREATE_COURIER, data=create_login_password_firstname)
     response = samokat_api.create_courier(data=create_login_password_firstname)
     login_pass = []
     if response.status_code == 201:
@@ -40,20 +39,15 @@ def create_courier(samokat_api, create_login_password_firstname):
         login_pass.append(create_login_password_firstname["password"])
         login_pass.append(create_login_password_firstname["firstName"])
     return login_pass
+
 
 @pytest.fixture
-def create_and_delete_courier(samokat_api, create_login_password_firstname, request):
-    response = samokat_api.create_courier(data=create_login_password_firstname)
-    login_pass = []
-    if response.status_code == 201:
-        login_pass.append(create_login_password_firstname["login"])
-        login_pass.append(create_login_password_firstname["password"])
-        login_pass.append(create_login_password_firstname["firstName"])
-
-        def fin():
-            delete_response = samokat_api.delete_courier(data=create_login_password_firstname)
-            assert delete_response.status_code == 200, f"Ошибка удаления: {delete_response.text}"
-
-        request.addfinalizer(fin)
-
-    return login_pass
+def create_and_delete_courier(samokat_api, create_courier):
+    login_pass = create_courier
+    yield login_pass
+    login, password = create_courier[:2]
+    payload = {
+        "login": login,
+        "password": password
+    }
+    API.delete_courier(samokat_api, data=payload)
