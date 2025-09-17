@@ -1,6 +1,6 @@
 import requests
 import allure
-from data import Data as D
+from data import BaseData as D
 
 
 class SamokatApi:

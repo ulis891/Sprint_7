@@ -1,5 +1,6 @@
 import allure
 import pytest
+from data import TestData as TD
 
 
 @allure.epic("API Яндекс Самокат")
@@ -19,7 +20,7 @@ class TestCourierCreation:
         payload = {"login": login, "password": password, "firstname": firstname}
         response = samokat_api.create_courier(data=payload)
         assert response.status_code == 409, "Неверный код ответа"
-        assert response.json()['message'] == "Этот логин уже используется. Попробуйте другой.", "Неверный ответ"
+        assert response.json()['message'] == TD.CREATE_DUPLICATE_COURIER_MESSAGE, "Неверный ответ"
 
     @allure.title("Тест создания курьера с пустым полем")
     @pytest.mark.parametrize("missing_field", ["login", "password", "firstName"])
@@ -28,7 +29,7 @@ class TestCourierCreation:
         del payload[missing_field]
         response = samokat_api.create_courier(data=payload)
         assert response.status_code == 400, "Неверный код ответа"
-        assert response.json()['message'] == "Недостаточно данных для создания учетной записи", "Неверный ответ"
+        assert response.json()['message'] == TD.MISSING_FIELDS_CREATE_MESSAGE, "Неверный ответ"
 
 
 @allure.epic("API Яндекс Самокат")
@@ -52,7 +53,7 @@ class TestCourierLogin:
         del payload[missing_field]
         response = samokat_api.login_courier(data=payload)
         assert response.status_code == 400, "Неверный код ответа"
-        assert response.json()["message"] == "Недостаточно данных для входа", "Неверное сообщение об ошибке"
+        assert response.json()["message"] == TD.MISSING_FIELDS_LOGIN_MESSAGE, "Неверное сообщение об ошибке"
 
     @allure.title("Тест логина с неверным паролем")
     def test_login_wrong_password(self, samokat_api, create_and_delete_courier):
@@ -60,7 +61,7 @@ class TestCourierLogin:
         payload = {"login": login, "password": password + "wrong"}
         response = samokat_api.login_courier(data=payload)
         assert response.status_code == 404, "Неверный код ответа"
-        assert response.json()["message"] == "Учетная запись не найдена", "Неверное сообщение об ошибке"
+        assert response.json()["message"] == TD.WRONG_FIELDS_LOGIN_MESSAGE, "Неверное сообщение об ошибке"
 
     @allure.title("Тест логина с несуществующим пользователем")
     def test_login_nonexistent_user(self, samokat_api, create_and_delete_courier):
@@ -68,7 +69,7 @@ class TestCourierLogin:
         payload = {"login": login + "wrong", "password": password}
         response = samokat_api.login_courier(data=payload)
         assert response.status_code == 404, "Неверный код ответа"
-        assert response.json()["message"] == "Учетная запись не найдена", "Неверное сообщение об ошибке"
+        assert response.json()["message"] == TD.WRONG_FIELDS_LOGIN_MESSAGE, "Неверное сообщение об ошибке"
 
 
 @allure.epic("API Яндекс Самокат")

@@ -1,6 +1,6 @@
 import pytest
 import allure
-from data import Data
+from data import OrderData
 import order_helper as OH
 
 
@@ -10,7 +10,7 @@ import order_helper as OH
 class TestOrderCreation:
 
     @allure.title("Тест создания заказа с разными цветами самоката")
-    @pytest.mark.parametrize('color', Data.COLOR_VARIANTS)
+    @pytest.mark.parametrize('color', OrderData.COLOR_VARIANTS)
     def test_order_creation(self, samokat_api, color):
         payload = OH.get_order_payload(color)
         response = samokat_api.create_order(json=payload)
