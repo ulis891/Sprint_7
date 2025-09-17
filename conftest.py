@@ -9,8 +9,18 @@ from samokat_api import SamokatApi as API
 def samokat_api():
     return API()
 
+
 @pytest.fixture
-def create_login_password_firstname():
+def delete_courier(samokat_api):
+    def _delete_courier(data):
+        response = samokat_api.delete_courier(data=data)
+        return response
+    return _delete_courier
+
+
+
+@pytest.fixture
+def create_login_password_firstname(delete_courier):
     def generate_random_string(length):
         letters = string.ascii_lowercase
         random_string = ''.join(random.choice(letters) for i in range(length))
@@ -27,6 +37,10 @@ def create_login_password_firstname():
         "firstName": first_name
     }
     yield payload
+    if "firstName" in payload:
+        del payload["firstName"]
+    if "login" and "password" in payload:
+        delete_courier(payload)
 
 
 
@@ -42,7 +56,7 @@ def create_courier(samokat_api, create_login_password_firstname):
 
 
 @pytest.fixture
-def create_and_delete_courier(samokat_api, create_courier):
+def create_and_delete_courier(samokat_api, create_courier, delete_courier):
     login_pass = create_courier
     yield login_pass
     login, password = create_courier[:2]
@@ -50,4 +64,4 @@ def create_and_delete_courier(samokat_api, create_courier):
         "login": login,
         "password": password
     }
-    API.delete_courier(samokat_api, data=payload)
+    delete_courier(payload)
